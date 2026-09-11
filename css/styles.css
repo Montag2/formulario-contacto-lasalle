@@ -1,0 +1,204 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #05101e;
+    min-height: 100vh;
+    color: #1e293b;
+}
+
+#fondo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    
+    /* Aumentamos el desenfoque para resaltar la tarjeta */
+    filter: blur(5px); 
+    
+    /* Escalamos ligeramente el canvas para que los bordes borrosos no se vean raros en las esquinas */
+    transform: scale(1.1); 
+}
+
+/* Contenedor principal */
+.contenedor {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+/* Estilos de la tarjeta */
+.tarjeta {
+    width: 100%;
+    max-width: 720px;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 38px 45px;
+    border-radius: 20px;
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.5),
+        0 0 45px rgba(35, 120, 220, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Encabezado y Textos */
+.logo { margin-bottom: 30px; }
+.logo img { width: 180px; height: auto; display: block; transition: 0.3s; }
+.encabezado { margin-bottom: 28px; }
+
+.titulo-pequeno {
+    color: #2764a5;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+h1 {
+    font-size: 30px;
+    color: #102a43;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.descripcion {
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 580px;
+}
+
+/* Elementos del Formulario */
+.fila { display: flex; gap: 18px; }
+.campo { margin-bottom: 18px; width: 100%; }
+label { display: block; font-size: 13px; font-weight: bold; color: #334155; margin-bottom: 7px; }
+
+input, textarea {
+    width: 100%;
+    border: 1px solid #d1d9e2;
+    border-radius: 8px;
+    padding: 12px 13px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+input:focus, textarea:focus {
+    border-color: #2764a5;
+    box-shadow: 0 0 0 3px rgba(39, 100, 165, 0.10);
+}
+
+textarea { resize: vertical; }
+
+button {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #17365d;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #0f2948;
+    box-shadow: 0 8px 20px rgba(23, 54, 93, 0.25);
+}
+
+.pie {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+/*DISEÑO RESPONSIVO*/
+
+/* Ajustes para pantallas con poca altura (Portátiles) */
+@media (max-height: 850px) {
+    .contenedor { padding: 15px 20px; }
+    .tarjeta { padding: 25px 35px; }
+    .logo { margin-bottom: 15px; }
+    .logo img { width: 140px; }
+    .encabezado { margin-bottom: 15px; }
+    h1 { font-size: 24px; }
+    .campo { margin-bottom: 12px; }
+    input, textarea { padding: 10px 12px; }
+    textarea { height: 80px; }
+}
+
+/* Ajustes para Tablets */
+@media (max-width: 768px) {
+    .tarjeta { padding: 30px 25px; }
+}
+
+/* Ajustes para Celulares */
+@media (max-width: 600px) {
+    .contenedor { padding: 20px 15px; }
+    .fila { display: block; }
+    h1 { font-size: 24px; }
+    .logo img { width: 150px; }
+}
+#fondo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    
+    /* Aumentamos el desenfoque para resaltar la tarjeta */
+    filter: blur(5px); 
+    
+    /* Escalamos ligeramente el canvas para que los bordes borrosos no se vean raros en las esquinas */
+    transform: scale(1.1); 
+}
+/* ESTILOS PARA ALERTAS Y DEBUG DE PHP*/
+.alerta {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.alerta.exito {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #34d399;
+}
+
+.alerta.error {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #f87171;
+}
+
+.debug-box {
+    background-color: #1e293b;
+    color: #38bdf8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-family: monospace;
+    font-size: 13px;
+    border: 1px dashed #7dd3fc;
+}
+
+.debug-box h4 {
+    color: #f8fafc;
+    margin-bottom: 10px;
+}

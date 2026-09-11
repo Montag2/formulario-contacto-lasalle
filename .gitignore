@@ -1,0 +1,13 @@
+# Ignorar archivo de variables de entorno reales (Protección de datos sensibles)
+.env
+
+# Ignorar archivos de registro (logs)
+*.log
+error_log
+
+# Ignorar carpetas del sistema operativo (macOS / Windows)
+.DS_Store
+Thumbs.db
+
+# Ignorar archivo de configuración real (Protección de datos sensibles)
+config/config.php
