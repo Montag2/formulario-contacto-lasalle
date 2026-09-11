@@ -97,3 +97,4 @@ Para comprobar el funcionamiento de la aplicación se deben realizar, como míni
 No se deben publicar en el repositorio contraseñas, tokens, claves, archivos `.env` reales ni archivos de configuración que contengan credenciales.
 
 El archivo `.gitignore` está configurado para excluir los archivos de configuración sensibles del repositorio.
+
