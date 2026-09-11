@@ -98,3 +98,4 @@ No se deben publicar en el repositorio contraseñas, tokens, claves, archivos `.
 
 El archivo `.gitignore` está configurado para excluir los archivos de configuración sensibles del repositorio.
 
+
