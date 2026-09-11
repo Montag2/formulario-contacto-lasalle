@@ -37,3 +37,63 @@ formulario-contacto-lasalle/
 ├── .gitignore               # Reglas de exclusión para Git (evita subir el archivo .env real y logs).
 ├── index.php                # Punto de entrada principal de la aplicación. Renderiza el formulario y procesa la petición inicial (POST).
 └── README.md                # Este archivo de documentación técnica y manual de instalación.
+## Requisitos previos
+
+Para ejecutar el proyecto localmente se requiere:
+
+* XAMPP con Apache y MySQL.
+* PHP 8 o superior.
+* Un navegador web actualizado.
+* Visual Studio Code u otro editor de código.
+* Git, para clonar y gestionar el repositorio.
+
+## Configuración del proyecto
+
+1. Clonar el repositorio desde GitHub dentro de la carpeta `htdocs` de XAMPP.
+
+2. Crear una copia del archivo `.env.example` y renombrarla como `.env`.
+
+3. Configurar en `.env` los datos correspondientes al ambiente local, especialmente la conexión con MySQL.
+
+4. Crear una copia de `config/config.example.php` y renombrarla como `config/config.php`.
+
+5. Ajustar en `config.php` los valores de conexión de acuerdo con la configuración local de MySQL.
+
+> El archivo `.env` y el archivo `config/config.php` no deben publicarse en GitHub cuando contienen credenciales o información sensible.
+
+## Configuración de la base de datos
+
+1. Iniciar Apache y MySQL desde XAMPP.
+
+2. Ingresar a phpMyAdmin.
+
+3. Crear una base de datos denominada `lasalle_dev` o utilizar el nombre definido en la configuración local.
+
+4. Importar el archivo `database/schema.sql` para crear la estructura necesaria.
+
+5. Verificar que los datos de conexión configurados correspondan a la base de datos creada.
+
+## Ejecución de la aplicación
+
+Con Apache y MySQL activos, abrir en el navegador:
+
+`http://localhost/formulario-contacto-lasalle/`
+
+La aplicación debe mostrar el formulario de contacto de la Universidad de La Salle.
+
+## Pruebas básicas
+
+Para comprobar el funcionamiento de la aplicación se deben realizar, como mínimo, las siguientes verificaciones:
+
+* Abrir correctamente la página principal.
+* Intentar enviar el formulario dejando campos obligatorios vacíos.
+* Verificar la validación del campo de correo electrónico.
+* Completar correctamente los campos y realizar el envío.
+* Verificar que se muestre el mensaje de confirmación correspondiente.
+* Comprobar que la aplicación mantenga su funcionamiento después de integrar los cambios realizados por los integrantes del equipo.
+
+## Seguridad
+
+No se deben publicar en el repositorio contraseñas, tokens, claves, archivos `.env` reales ni archivos de configuración que contengan credenciales.
+
+El archivo `.gitignore` está configurado para excluir los archivos de configuración sensibles del repositorio.
