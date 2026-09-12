@@ -15,37 +15,111 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $asunto = trim($_POST['asunto'] ?? '');
     $mensaje = trim($_POST['mensaje'] ?? '');
 
-    // 1. Validar que no estén vacíos
+    // 1. Validar que todos los campos obligatorios estén completos
     if (empty($nombre) || empty($correo) || empty($asunto) || empty($mensaje)) {
-        $mensaje_estado = "<div class='alerta error'>Por favor, completa todos los campos obligatorios.</div>";
-    }
-    // 2. Validar restricciones del Nombre (Solo letras, espacios y tildes en español)
-    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u", $nombre)) {
-        $mensaje_estado = "<div class='alerta error'>El nombre solo debe contener letras y espacios (sin números ni símbolos).</div>";
-    }
-    // 3. Validar restricciones del Correo (Estructura real con @)
-    elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-        $mensaje_estado = "<div class='alerta error'>El correo electrónico no es válido (debe incluir '@' y un dominio correcto).</div>";
-    }
-    // 4. Validar restricciones de longitud del Mensaje (Ej: Mínimo 10, máximo 500 caracteres)
-    elseif (strlen($mensaje) < 10 || strlen($mensaje) > 500) {
-        $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 
-        10 y 500 caracteres (actualmente tiene " . strlen($mensaje) . ").</div>";
-    } else {
-        // Si todo pasa las validaciones de PHP:
-        $mensaje_estado = "<div class='alerta exito'>¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>! 
-        Tu mensaje ha sido validado y recibido correctamente.</div>";
 
-        // Modo Debug (Ambiente de Desarrollo)
-        $debug_info = "
-        <div class='debug-box'>
-            <h4>🛠️ Modo Debug (Ambiente de Desarrollo)</h4>
-            <p><strong>Nombre:</strong> " . htmlspecialchars($nombre) . "</p>
-            <p><strong>Correo:</strong> " . htmlspecialchars($correo) . "</p>
-            <p><strong>Asunto:</strong> " . htmlspecialchars($asunto) . "</p>
-            <p><strong>Mensaje:</strong> " . htmlspecialchars($mensaje) . "</p>
-            <p><em>* Validación superada con éxito (Longitud de mensaje: " . strlen($mensaje) . " chars) *</em></p>
+        $mensaje_estado = "<div class='alerta error'>
+            Por favor, completa todos los campos obligatorios.
         </div>";
+
+    }
+
+    // 2. Validar longitud del nombre
+    elseif (strlen($nombre) < 3 || strlen($nombre) > 80) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El nombre debe tener entre 3 y 80 caracteres.
+        </div>";
+
+    }
+
+    // 3. Validar contenido del nombre
+    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u", $nombre)) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El nombre solo debe contener letras y espacios.
+        </div>";
+
+    }
+
+    // 4. Validar formato del correo electrónico
+    elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El correo electrónico no tiene un formato válido.
+        </div>";
+
+    }
+
+    // 5. Validar longitud del correo
+    elseif (strlen($correo) > 150) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El correo electrónico es demasiado largo.
+        </div>";
+
+    }
+
+    // 6. Validar longitud del asunto
+    elseif (strlen($asunto) < 5 || strlen($asunto) > 120) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El asunto debe tener entre 5 y 120 caracteres.
+        </div>";
+
+    }
+
+    // 7. Validar longitud del mensaje
+    elseif (strlen($mensaje) < 10 || strlen($mensaje) > 500) {
+
+        $mensaje_estado = "<div class='alerta error'>
+            El mensaje debe tener entre 10 y 500 caracteres.
+        </div>";
+
+    }
+
+    else {
+
+        // Si todo pasa las validaciones de PHP
+        $mensaje_estado = "<div class='alerta exito'>
+            ¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>!
+            Tu mensaje ha sido validado y recibido correctamente.
+        </div>";
+
+        // Modo Debug
+        if (defined('APP_ENV') && (APP_ENV === 'desarrollo' || APP_ENV === 'pruebas')) {
+
+            $debug_info = "
+            <div class='debug-box'>
+                <h4>🛠️ Modo Debug</h4>
+
+                <p>
+                    <strong>Nombre:</strong>
+                    " . htmlspecialchars($nombre) . "
+                </p>
+
+                <p>
+                    <strong>Correo:</strong>
+                    " . htmlspecialchars($correo) . "
+                </p>
+
+                <p>
+                    <strong>Asunto:</strong>
+                    " . htmlspecialchars($asunto) . "
+                </p>
+
+                <p>
+                    <strong>Mensaje:</strong>
+                    " . htmlspecialchars($mensaje) . "
+                </p>
+
+                <p>
+                    <em>
+                        Validación superada correctamente.
+                    </em>
+                </p>
+            </div>";
+        }
     }
 }
 
@@ -54,60 +128,135 @@ include 'includes/header.php';
 ?>
 
 <section class="tarjeta">
+
     <div class="logo">
-        <img src="img/Logo_de_la_Univesidad_de_la_Salle_(Bogotá).svg.png" alt="Universidad de La Salle">
+
+        <img
+            src="img/Logo_de_la_Univesidad_de_la_Salle_(Bogotá).svg.png"
+            alt="Universidad de La Salle"
+        >
+
     </div>
 
     <div class="encabezado">
-        <p class="titulo-pequeno">Formulario de Contacto</p>
-        <h1>¿Cómo podemos ayudarte?</h1>
+
+        <p class="titulo-pequeno">
+            Formulario de Contacto
+        </p>
+
+        <h1>
+            ¿Cómo podemos ayudarte?
+        </h1>
+
         <p class="descripcion">
             Déjanos tus datos y cuéntanos en qué podemos ayudarte.
             Nuestro equipo se pondrá en contacto contigo.
         </p>
+
     </div>
 
-    <!-- AQUÍ IMPRIMIMOS LOS MENSAJES DE PHP -->
+    <!-- Mensajes de validación -->
     <?php
-    if (!empty($mensaje_estado)) echo $mensaje_estado;
-    if (!empty($debug_info)) echo $debug_info;
+
+    if (!empty($mensaje_estado)) {
+        echo $mensaje_estado;
+    }
+
+    if (!empty($debug_info)) {
+        echo $debug_info;
+    }
+
     ?>
 
-    <!-- Agregamos restricciones HTML5 (pattern, minlength, maxlength) para apoyar la validación -->
     <form action="" method="POST">
+
         <div class="fila">
+
             <div class="campo">
-                <label for="nombre">Nombre completo</label>
-                <!-- pattern permite solo letras con tildes y espacios -->
-                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre"
-                    pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios" required>
+
+                <label for="nombre">
+                    Nombre completo
+                </label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    placeholder="Tu nombre"
+                    minlength="3"
+                    maxlength="80"
+                    pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
+                    title="Solo se permiten letras y espacios"
+                    required
+                >
+
             </div>
+
             <div class="campo">
-                <label for="correo">Correo electrónico</label>
-                <!-- type="email" exige el uso del @ obligatoriamente -->
-                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
+
+                <label for="correo">
+                    Correo electrónico
+                </label>
+
+                <input
+                    type="email"
+                    id="correo"
+                    name="correo"
+                    placeholder="correo@ejemplo.com"
+                    maxlength="150"
+                    required
+                >
+
             </div>
+
         </div>
+
         <div class="campo">
-            <label for="asunto">Asunto</label>
-            <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje" required>
+
+            <label for="asunto">
+                Asunto
+            </label>
+
+            <input
+                type="text"
+                id="asunto"
+                name="asunto"
+                placeholder="Motivo de tu mensaje"
+                minlength="5"
+                maxlength="120"
+                required
+            >
+
         </div>
+
         <div class="campo">
-            <label for="mensaje">Mensaje (Máximo 500 caracteres)</label>
-            <!-- minlength y maxlength controlan la cantidad de caracteres -->
-            <textarea id="mensaje" name="mensaje" rows="5" minlength="10" 
-            maxlength="500"
-                placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..." 
-                required></textarea>
+
+            <label for="mensaje">
+                Mensaje (Máximo 500 caracteres)
+            </label>
+
+            <textarea
+                id="mensaje"
+                name="mensaje"
+                rows="5"
+                minlength="10"
+                maxlength="500"
+                placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..."
+                required
+            ></textarea>
+
         </div>
+
         <button type="submit">
             Enviar mensaje
         </button>
+
     </form>
 
     <p class="pie">
         Universidad de La Salle · Formulario de contacto
     </p>
+
 </section>
 
 <?php
