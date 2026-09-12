@@ -1,4 +1,4 @@
-# Formulario de Contacto - Universidad de La Salle
+# Formulario de Contacto La Salle - Arquitectura, Pruebas y Validación
 
 Este proyecto es una aplicación web sencilla creada para demostrar la configuración y diferenciación de tres ambientes: **Desarrollo, Pruebas y Producción**. Corresponde a la Actividad 4 de la materia.
 
@@ -37,16 +37,11 @@ formulario-contacto-lasalle/
 ├── .gitignore               # Reglas de exclusión para Git (evita subir el archivo .env real y logs).
 ├── index.php                # Punto de entrada principal de la aplicación. Renderiza el formulario y procesa la petición inicial (POST).
 └── README.md                # Este archivo de documentación técnica y manual de instalación.
-## Requisitos previos
 
-Para ejecutar el proyecto localmente se requiere:
-
-* XAMPP con Apache y MySQL.
-* PHP 8 o superior.
-* Un navegador web actualizado.
-* Visual Studio Code u otro editor de código.
-* Git, para clonar y gestionar el repositorio.
-
+## Requisitos del Entorno
+* XAMPP con servidor Apache y motor MySQL 8.0/MariaDB.
+* PHP 8.1 o superior con extensión PDO y modo debug para desarrollo.
+* Navegador web actualizado para validaciones funcionales de interfaz.
 ## Configuración del proyecto
 
 1. Clonar el repositorio desde GitHub dentro de la carpeta `htdocs` de XAMPP.
@@ -99,3 +94,8 @@ No se deben publicar en el repositorio contraseñas, tokens, claves, archivos `.
 El archivo `.gitignore` está configurado para excluir los archivos de configuración sensibles del repositorio.
 
 
+## Requisitos del Entorno
+
+- XAMPP con servidor Apache y MySQL en ejecución local.
+- Navegador web moderno (Chrome, Firefox o Edge) para pruebas de UI.
+- Modo debug activo en PHP para captura de errores en desarrollo.
