@@ -97,24 +97,27 @@ include 'includes/header.php';
                 <label for="nombre">Nombre completo</label>
                 <!-- pattern permite solo letras con tildes y espacios -->
                 <input type="text" id="nombre" name="nombre" placeholder="Tu nombre"
-                    pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios" required>
+                    minlength="2" maxlength="80"
+                    pattern="[A-Za-záéíóúÁÉÍÓÚüÜñÑ]+(?:[ '-][A-Za-záéíóúÁÉÍÓÚüÜñÑ]+)*"
+                    title="Usa entre 2 y 80 caracteres: solo letras, espacios, guiones o apóstrofes" required>
             </div>
             <div class="campo">
                 <label for="correo">Correo electrónico</label>
                 <!-- type="email" exige el uso del @ obligatoriamente -->
-                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>
+                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com"
+                    maxlength="254" autocomplete="email" required>
             </div>
         </div>
         <div class="campo">
             <label for="asunto">Asunto</label>
-            <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje" required>
+            <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje"
+                minlength="3" maxlength="120" required>
         </div>
         <div class="campo">
             <label for="mensaje">Mensaje (Máximo 500 caracteres)</label>
             <!-- minlength y maxlength controlan la cantidad de caracteres -->
-            <textarea id="mensaje" name="mensaje" rows="5" minlength="10" 
-            maxlength="500"
-                placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..." 
+            <textarea id="mensaje" name="mensaje" rows="5" minlength="10" maxlength="500"
+                placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..."
                 required></textarea>
         </div>
         <button type="submit">
