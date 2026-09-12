@@ -37,16 +37,11 @@ formulario-contacto-lasalle/
 ├── .gitignore               # Reglas de exclusión para Git (evita subir el archivo .env real y logs).
 ├── index.php                # Punto de entrada principal de la aplicación. Renderiza el formulario y procesa la petición inicial (POST).
 └── README.md                # Este archivo de documentación técnica y manual de instalación.
-## Requisitos previos
 
-Para ejecutar el proyecto localmente se requiere:
-
-* XAMPP con Apache y MySQL.
-* PHP 8 o superior.
-* Un navegador web actualizado.
-* Visual Studio Code u otro editor de código.
-* Git, para clonar y gestionar el repositorio.
-
+## Requisitos del Entorno
+* XAMPP con servidor Apache y motor MySQL 8.0/MariaDB.
+* PHP 8.1 o superior con extensión PDO y modo debug para desarrollo.
+* Navegador web actualizado para validaciones funcionales de interfaz.
 ## Configuración del proyecto
 
 1. Clonar el repositorio desde GitHub dentro de la carpeta `htdocs` de XAMPP.
