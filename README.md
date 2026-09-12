@@ -1,4 +1,4 @@
-# Formulario de Contacto La Salle - Arquitectura
+# Formulario de Contacto La Salle - Arquitectura, Pruebas y Validación
 
 Este proyecto es una aplicación web sencilla creada para demostrar la configuración y diferenciación de tres ambientes: **Desarrollo, Pruebas y Producción**. Corresponde a la Actividad 4 de la materia.
 
@@ -116,3 +116,8 @@ No se deben publicar en el repositorio contraseñas, tokens, claves, archivos `.
 El archivo `.gitignore` está configurado para excluir los archivos de configuración sensibles del repositorio.
 
 
+## Requisitos del Entorno
+
+- XAMPP con servidor Apache y MySQL en ejecución local.
+- Navegador web moderno (Chrome, Firefox o Edge) para pruebas de UI.
+- Modo debug activo en PHP para captura de errores en desarrollo.
