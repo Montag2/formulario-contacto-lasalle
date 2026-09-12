@@ -5,32 +5,49 @@
 // Inicializamos variables para los mensajes
 $mensaje_estado = '';
 $debug_info = '';
+$limites = [
+    'nombre' => ['minimo' => 2, 'maximo' => 80],
+    'correo' => ['minimo' => 5, 'maximo' => 254],
+    'asunto' => ['minimo' => 3, 'maximo' => 120],
+    'mensaje' => ['minimo' => 10, 'maximo' => 500],
+];
+
+function longitud_texto(string $texto): int
+{
+    return function_exists('mb_strlen') ? mb_strlen($texto, 'UTF-8') : strlen($texto);
+}
 
 // Verificamos si el formulario fue enviado mediante el método POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Capturamos los datos
-    $nombre = trim($_POST['nombre'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');
-    $asunto = trim($_POST['asunto'] ?? '');
+    $nombre = preg_replace('/\s+/u', ' ', trim($_POST['nombre'] ?? ''));
+    $correo = strtolower(trim($_POST['correo'] ?? ''));
+    $asunto = preg_replace('/\s+/u', ' ', trim($_POST['asunto'] ?? ''));
     $mensaje = trim($_POST['mensaje'] ?? '');
 
     // 1. Validar que no estén vacíos
-    if (empty($nombre) || empty($correo) || empty($asunto) || empty($mensaje)) {
+    if ($nombre === '' || $correo === '' || $asunto === '' || $mensaje === '') {
         $mensaje_estado = "<div class='alerta error'>Por favor, completa todos los campos obligatorios.</div>";
     }
-    // 2. Validar restricciones del Nombre (Solo letras, espacios y tildes en español)
-    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u", $nombre)) {
+    // 2. Validar restricciones del Nombre (letras, espacios y tildes en español)
+    elseif (longitud_texto($nombre) < $limites['nombre']['minimo'] || longitud_texto($nombre) > $limites['nombre']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El nombre debe tener entre 2 y 80 caracteres.</div>";
+    }
+    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:[ '-][a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)*$/u", $nombre)) {
         $mensaje_estado = "<div class='alerta error'>El nombre solo debe contener letras y espacios (sin números ni símbolos).</div>";
     }
-    // 3. Validar restricciones del Correo (Estructura real con @)
-    elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+    // 3. Validar restricciones del Correo (estructura y longitud)
+    elseif (longitud_texto($correo) > $limites['correo']['maximo'] || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
         $mensaje_estado = "<div class='alerta error'>El correo electrónico no es válido (debe incluir '@' y un dominio correcto).</div>";
     }
-    // 4. Validar restricciones de longitud del Mensaje (Ej: Mínimo 10, máximo 500 caracteres)
-    elseif (strlen($mensaje) < 10 || strlen($mensaje) > 500) {
-        $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 
-        10 y 500 caracteres (actualmente tiene " . strlen($mensaje) . ").</div>";
+    // 4. Validar longitud del asunto
+    elseif (longitud_texto($asunto) < $limites['asunto']['minimo'] || longitud_texto($asunto) > $limites['asunto']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El asunto debe tener entre 3 y 120 caracteres.</div>";
+    }
+    // 5. Validar longitud del mensaje contando caracteres, no bytes
+    elseif (longitud_texto($mensaje) < $limites['mensaje']['minimo'] || longitud_texto($mensaje) > $limites['mensaje']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 10 y 500 caracteres (actualmente tiene " . longitud_texto($mensaje) . ").</div>";
     } else {
         // Si todo pasa las validaciones de PHP:
         $mensaje_estado = "<div class='alerta exito'>¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>! 
