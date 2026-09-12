@@ -1,4 +1,4 @@
-# Formulario de Contacto - Universidad de La Salle
+# Formulario de Contacto La Salle - Validaciones y Pruebas
 
 Este proyecto es una aplicación web sencilla creada para demostrar la configuración y diferenciación de tres ambientes: **Desarrollo, Pruebas y Producción**. Corresponde a la Actividad 4 de la materia.
 
