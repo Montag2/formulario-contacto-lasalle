@@ -5,86 +5,54 @@
 // Inicializamos variables para los mensajes
 $mensaje_estado = '';
 $debug_info = '';
+$limites = [
+    'nombre' => ['minimo' => 2, 'maximo' => 80],
+    'correo' => ['minimo' => 5, 'maximo' => 254],
+    'asunto' => ['minimo' => 3, 'maximo' => 120],
+    'mensaje' => ['minimo' => 10, 'maximo' => 500],
+];
+
+function longitud_texto(string $texto): int
+{
+    return function_exists('mb_strlen') ? mb_strlen($texto, 'UTF-8') : strlen($texto);
+}
 
 // Verificamos si el formulario fue enviado mediante el método POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Capturamos los datos
-    $nombre = trim($_POST['nombre'] ?? '');
-    $correo = trim($_POST['correo'] ?? '');
-    $asunto = trim($_POST['asunto'] ?? '');
+    $nombre = preg_replace('/\s+/u', ' ', trim($_POST['nombre'] ?? ''));
+    $correo = strtolower(trim($_POST['correo'] ?? ''));
+    $asunto = preg_replace('/\s+/u', ' ', trim($_POST['asunto'] ?? ''));
     $mensaje = trim($_POST['mensaje'] ?? '');
 
-    // 1. Validar que todos los campos obligatorios estén completos
-    if (empty($nombre) || empty($correo) || empty($asunto) || empty($mensaje)) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            Por favor, completa todos los campos obligatorios.
-        </div>";
-
+    // 1. Validar que no estén vacíos
+    if ($nombre === '' || $correo === '' || $asunto === '' || $mensaje === '') {
+        $mensaje_estado = "<div class='alerta error'>Por favor, completa todos los campos obligatorios.</div>";
     }
-
-    // 2. Validar longitud del nombre
-    elseif (strlen($nombre) < 3 || strlen($nombre) > 80) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El nombre debe tener entre 3 y 80 caracteres.
-        </div>";
-
+    // 2. Validar restricciones del Nombre (letras, espacios y tildes en español)
+    elseif (longitud_texto($nombre) < $limites['nombre']['minimo'] || longitud_texto($nombre) > $limites['nombre']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El nombre debe tener entre 2 y 80 caracteres.</div>";
     }
-
-    // 3. Validar contenido del nombre
-    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u", $nombre)) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El nombre solo debe contener letras y espacios.
-        </div>";
-
+    elseif (!preg_match("/^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+(?:[ '-][a-zA-ZáéíóúÁÉÍÓÚüÜñÑ]+)*$/u", $nombre)) {
+        $mensaje_estado = "<div class='alerta error'>El nombre solo debe contener letras y espacios (sin números ni símbolos).</div>";
     }
-
-    // 4. Validar formato del correo electrónico
-    elseif (!filter_var($correo, FILTER_VALIDATE_EMAIL)) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El correo electrónico no tiene un formato válido.
-        </div>";
-
+    // 3. Validar restricciones del Correo (estructura y longitud)
+    elseif (longitud_texto($correo) > $limites['correo']['maximo'] || !filter_var($correo, FILTER_VALIDATE_EMAIL)) {
+        $mensaje_estado = "<div class='alerta error'>El correo electrónico no es válido (debe incluir '@' y un dominio correcto).</div>";
     }
-
-    // 5. Validar longitud del correo
-    elseif (strlen($correo) > 150) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El correo electrónico es demasiado largo.
-        </div>";
-
+    // 4. Validar longitud del asunto
+    elseif (longitud_texto($asunto) < $limites['asunto']['minimo'] || longitud_texto($asunto) > $limites['asunto']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El asunto debe tener entre 3 y 120 caracteres.</div>";
     }
-
-    // 6. Validar longitud del asunto
-    elseif (strlen($asunto) < 5 || strlen($asunto) > 120) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El asunto debe tener entre 5 y 120 caracteres.
-        </div>";
-
+    // 5. Validar longitud del mensaje contando caracteres, no bytes
+    elseif (longitud_texto($mensaje) < $limites['mensaje']['minimo'] || longitud_texto($mensaje) > $limites['mensaje']['maximo']) {
+        $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 10 y 500 caracteres (actualmente tiene " . longitud_texto($mensaje) . ").</div>";
+    } else {
+        // Si todo pasa las validaciones de PHP:
+        $mensaje_estado = "<div class='alerta exito'>¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>! 
+        Tu mensaje ha sido validado y recibido correctamente.</div>";
     }
-
-    // 7. Validar longitud del mensaje
-    elseif (strlen($mensaje) < 10 || strlen($mensaje) > 500) {
-
-        $mensaje_estado = "<div class='alerta error'>
-            El mensaje debe tener entre 10 y 500 caracteres.
-        </div>";
-
-    }
-
-    else {
-
-        // Si todo pasa las validaciones de PHP
-        $mensaje_estado = "<div class='alerta exito'>
-            ¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>!
-            Tu mensaje ha sido validado y recibido correctamente.
-        </div>";
 
         // Modo Debug
         if (defined('APP_ENV') && (APP_ENV === 'desarrollo' || APP_ENV === 'pruebas')) {
@@ -173,78 +141,35 @@ include 'includes/header.php';
         <div class="fila">
 
             <div class="campo">
-
-                <label for="nombre">
-                    Nombre completo
-                </label>
-
-                <input
-                    type="text"
-                    id="nombre"
-                    name="nombre"
-                    placeholder="Tu nombre"
-                    minlength="3"
-                    maxlength="80"
-                    pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
-                    title="Solo se permiten letras y espacios"
-                    required
-                >
-
+                <label for="nombre">Nombre completo</label>
+                <!-- pattern permite solo letras con tildes y espacios -->
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre"
+                    minlength="2" maxlength="80"
+                    pattern="[A-Za-záéíóúÁÉÍÓÚüÜñÑ]+(?:[ '-][A-Za-záéíóúÁÉÍÓÚüÜñÑ]+)*"
+                    title="Usa entre 2 y 80 caracteres: solo letras, espacios, guiones o apóstrofes" required>
             </div>
 
             <div class="campo">
-
-                <label for="correo">
-                    Correo electrónico
-                </label>
-
-                <input
-                    type="email"
-                    id="correo"
-                    name="correo"
-                    placeholder="correo@ejemplo.com"
-                    maxlength="150"
-                    required
-                >
-
+                <label for="correo">Correo electrónico</label>
+                <!-- type="email" exige el uso del @ obligatoriamente -->
+                <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com"
+                    maxlength="254" autocomplete="email" required>
             </div>
 
         </div>
 
         <div class="campo">
-
-            <label for="asunto">
-                Asunto
-            </label>
-
-            <input
-                type="text"
-                id="asunto"
-                name="asunto"
-                placeholder="Motivo de tu mensaje"
-                minlength="5"
-                maxlength="120"
-                required
-            >
-
+            <label for="asunto">Asunto</label>
+            <input type="text" id="asunto" name="asunto" placeholder="Motivo de tu mensaje"
+                minlength="3" maxlength="120" required>
         </div>
 
         <div class="campo">
-
-            <label for="mensaje">
-                Mensaje (Máximo 500 caracteres)
-            </label>
-
-            <textarea
-                id="mensaje"
-                name="mensaje"
-                rows="5"
-                minlength="10"
-                maxlength="500"
+            <label for="mensaje">Mensaje (Máximo 500 caracteres)</label>
+            <!-- minlength y maxlength controlan la cantidad de caracteres -->
+            <textarea id="mensaje" name="mensaje" rows="5" minlength="10" maxlength="500"
                 placeholder="Escribe tu mensaje aquí (mínimo 10 caracteres)..."
-                required
-            ></textarea>
-
+                required></textarea>
         </div>
 
         <button type="submit">

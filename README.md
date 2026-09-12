@@ -78,14 +78,36 @@ La aplicación debe mostrar el formulario de contacto de la Universidad de La Sa
 
 ## Pruebas básicas
 
-Para comprobar el funcionamiento de la aplicación se deben realizar, como mínimo, las siguientes verificaciones:
+Para comprobar el funcionamiento de la aplicación se deben realizar las siguientes verificaciones en el navegador y también mediante una petición POST directa cuando sea posible:
 
 * Abrir correctamente la página principal.
-* Intentar enviar el formulario dejando campos obligatorios vacíos.
-* Verificar la validación del campo de correo electrónico.
-* Completar correctamente los campos y realizar el envío.
-* Verificar que se muestre el mensaje de confirmación correspondiente.
-* Comprobar que la aplicación mantenga su funcionamiento después de integrar los cambios realizados por los integrantes del equipo.
+* Enviar el formulario con campos vacíos y confirmar que se muestre el mensaje de campos obligatorios.
+* Probar un nombre con números o símbolos y confirmar que sea rechazado.
+* Probar un nombre válido con tilde, guion o apóstrofe y confirmar que sea aceptado.
+* Probar un correo sin formato válido y confirmar que sea rechazado.
+* Probar un asunto de menos de 3 caracteres y confirmar que sea rechazado.
+* Probar un mensaje de menos de 10 o más de 500 caracteres y confirmar que sea rechazado.
+* Completar todos los campos con valores válidos y verificar el mensaje de confirmación.
+
+### Reglas de validación
+
+| Campo | Reglas |
+| --- | --- |
+| Nombre | Obligatorio, entre 2 y 80 caracteres; admite letras, espacios, guiones y apóstrofes. |
+| Correo | Obligatorio, formato de correo válido y máximo 254 caracteres. |
+| Asunto | Obligatorio, entre 3 y 120 caracteres. |
+| Mensaje | Obligatorio, entre 10 y 500 caracteres. |
+
+Las restricciones se aplican tanto en HTML5 como en PHP. La validación del servidor es la definitiva, porque también controla solicitudes que no provengan directamente del navegador.
+
+### Verificación después de integrar cambios
+
+Después de integrar una rama mediante pull request:
+
+1. Confirmar que no existan conflictos pendientes con `git status`.
+2. Abrir nuevamente la página principal.
+3. Repetir las pruebas de valores inválidos y válidos descritas arriba.
+4. Registrar en la revisión del pull request el resultado de la prueba final.
 
 ## Seguridad
 
