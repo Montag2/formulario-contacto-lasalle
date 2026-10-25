@@ -1,6 +1,8 @@
 <?php
 // Importar configuración global
 @include_once 'config/config.php';
+// Importar conexión a la base de datos
+require_once __DIR__ . '/includes/database.php';
 
 // Inicializamos variables para los mensajes
 $mensaje_estado = '';
@@ -46,54 +48,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mensaje_estado = "<div class='alerta error'>El asunto debe tener entre 3 y 120 caracteres.</div>";
     }
     // 5. Validar longitud del mensaje contando caracteres, no bytes
-    elseif (longitud_texto($mensaje) < $limites['mensaje']['minimo'] || longitud_texto($mensaje) > $limites['mensaje']['maximo']) {
-        $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 10 y 500 caracteres (actualmente tiene " . longitud_texto($mensaje) . ").</div>";
-    } else {
-        // Si todo pasa las validaciones de PHP:
-        $mensaje_estado = "<div class='alerta exito'>¡Gracias, <strong>" . htmlspecialchars($nombre) . "</strong>! 
-        Tu mensaje ha sido validado y recibido correctamente.</div>";
-    }
+elseif (longitud_texto($mensaje) < $limites['mensaje']['minimo'] || longitud_texto($mensaje) > $limites['mensaje']['maximo']) {
+    $mensaje_estado = "<div class='alerta error'>El mensaje debe tener entre 10 y 500 caracteres (actualmente tiene " . longitud_texto($mensaje) . ").</div>";
+} else {    // Si todo pasa las validaciones de PHP, guardamos los datos
+    try {
+        $sql = "INSERT INTO contactos (nombre, correo, asunto, mensaje)
+                VALUES (:nombre, :correo, :asunto, :mensaje)";
 
-        // Modo Debug
+        $consulta = $conexion->prepare($sql);
+
+        $consulta->execute([
+            ':nombre' => $nombre,
+            ':correo' => $correo,
+            ':asunto' => $asunto,
+            ':mensaje' => $mensaje
+        ]);
+
+        $mensaje_estado = "<div class='alerta exito'>¡Gracias, <strong>"
+            . htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8')
+            . "</strong>! Tu mensaje se guardó correctamente.</div>";
+
+    } catch (PDOException $e) {
+        $mensaje_estado = "<div class='alerta error'>No fue posible guardar el mensaje. Inténtalo nuevamente.</div>";
+
         if (defined('APP_ENV') && (APP_ENV === 'desarrollo' || APP_ENV === 'pruebas')) {
-
-            $debug_info = "
-            <div class='debug-box'>
-                <h4>🛠️ Modo Debug</h4>
-
-                <p>
-                    <strong>Nombre:</strong>
-                    " . htmlspecialchars($nombre) . "
-                </p>
-
-                <p>
-                    <strong>Correo:</strong>
-                    " . htmlspecialchars($correo) . "
-                </p>
-
-                <p>
-                    <strong>Asunto:</strong>
-                    " . htmlspecialchars($asunto) . "
-                </p>
-
-                <p>
-                    <strong>Mensaje:</strong>
-                    " . htmlspecialchars($mensaje) . "
-                </p>
-
-                <p>
-                    <em>
-                        Validación superada correctamente.
-                    </em>
-                </p>
-            </div>";
+            $debug_info = "<div class='debug-box'>Error al guardar en la base de datos: "
+                . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8')
+                . "</div>";
         }
     }
 }
+// Modo Debug: mostrar los datos solo cuando pasan las validaciones
+if (
+    $mensaje_estado !== '' &&
+    strpos($mensaje_estado, "alerta exito") !== false &&
+    defined('APP_ENV') &&
+    (APP_ENV === 'desarrollo' || APP_ENV === 'pruebas')
+) {
+    $debug_info = "
+    <div class='debug-box'>
+        <h4>Modo Debug</h4>
+        <p><strong>Nombre:</strong> " . htmlspecialchars($nombre, ENT_QUOTES, 'UTF-8') . "</p>
+        <p><strong>Correo:</strong> " . htmlspecialchars($correo, ENT_QUOTES, 'UTF-8') . "</p>
+        <p><strong>Asunto:</strong> " . htmlspecialchars($asunto, ENT_QUOTES, 'UTF-8') . "</p>
+        <p><strong>Mensaje:</strong> " . htmlspecialchars($mensaje, ENT_QUOTES, 'UTF-8') . "</p>
+        <p><em>Validación y almacenamiento completados correctamente.</em></p>
+    </div>";
+}
+
+// Cerramos el bloque de procesamiento del formulario
+}
 
 // Importamos la cabecera modular
-include 'includes/header.php';
-?>
+include 'includes/header.php';?>
 
 <section class="tarjeta">
 
